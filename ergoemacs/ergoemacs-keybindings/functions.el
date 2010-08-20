@@ -346,12 +346,16 @@ Emacs buffers are those whose name starts with *."
     (while (and (not (string-match "^*" (buffer-name))) (< i 50))
       (setq i (1+ i)) (previous-buffer) )))
 
-(defun new-empty-buffer ()
-  "Opens a new empty buffer."
-  (interactive)
-  (let ((buf (generate-new-buffer "untitled")))
+(defun new-empty-buffer (arg)
+  "Opens a new empty buffer. With a prefix argument, use the same
+mode as the current buffer."
+  (interactive "P")
+  (let ((buf (generate-new-buffer "untitled"))
+        (curmode major-mode))
     (switch-to-buffer buf)
-    (funcall (and initial-major-mode))
+    (funcall (if current-prefix-arg
+                 curmode
+               (and initial-major-mode)))
     (setq buffer-offer-save t)))
 ;; note: emacs won't offer to save a buffer that's
 ;; not associated with a file,
